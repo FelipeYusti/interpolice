@@ -2,6 +2,8 @@
 
 const express = require("express");
 
+const bcrypt = require("bcryptjs"); // instanciamos la libreria bcrypt para encriptar la password
+
 const bd = require("./bd.js"); // instanciamos la  conexion de la base de datos
 
 const usuario = express();
@@ -48,7 +50,7 @@ usuario.get("/api/usuario/listarPorId/:id", (req, res) => {
 usuario.post("/api/usuario/crearUsuario", (req, res) => {
   let formDatosUsuario = {
     nombre: req.body.nombre,
-    password: req.body.pass,
+    password: bcrypt.hashSync(req.body.pass,10),
     rol_idrol: req.body.rol_idrol
   };
 
