@@ -7,7 +7,7 @@ let pass = document.querySelector("#TxtPass");
 let frmUsuario = document.querySelector("#frmUsuario");
 let rol = document.querySelector(".rol");
 let selectRol = document.querySelector("#rol");
-
+let accionForm = "";
 //Llmamos el metodo de modal de boostrap
 const frmCrearUsuarios = new bootstrap.Modal(document.getElementById("frmCrearUsuario"));
 let btnNuevo = document.querySelector("#btnNuevo");
@@ -32,8 +32,8 @@ function roles() {
     });
 }
 
-let accion = "";
 btnNuevo.addEventListener("click", () => {
+  accionForm = "agregar";
   frmCrearUsuarios.show();
 });
 
@@ -56,9 +56,9 @@ function listarCityzen() {
           ` <tr>
           <td>${usuario.idusuarios}</td>
           <td>${usuario.nombre}</td>
-          <td>${usuario.rol_idrol}</td>
-          <td><a type="button" class="btnEditar btn btn-success"><i class="bi bi-pencil-square"></i></a></td>
-          <td><a type="button" class="btnBorrar btn btn-danger"><i class="bi bi-trash"></i></a></td>
+          <td>${usuario.rol}</td>
+          <td><a type="button" class="btnEditar btn btn-success" onclick="obtenerID(${usuario.idusuarios},'editar') " ><i class="bi bi-pencil-square"></i></a></td>
+          <td><a type="button" class="btnBorrar btn btn-danger" onclick="obtenerID(${usuario.idusuarios},'eliminar') "><i class="bi bi-trash"></i></a></td>
           </tr> ` + "</br>";
 
         tablaUsuarios.innerHTML += fila;
@@ -69,55 +69,38 @@ function listarCityzen() {
 frmUsuario.addEventListener("submit", (e) => {
   e.preventDefault(); // previene el evento por defecto de los formularios
 
-  fetch(api + "crearUsuario", {
-    method: "POST",
-    // configuramos la cabecera, Header de peticion lleva una configuracin : contiene un archivo JS a JSON
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      nombre: usuario.value,
-      pass: pass.value,
-      rol_idrol: rol.value
-    })
-  })
-    .then((res) => res.json())
-    .then((res) => {
-      console.log(res);
-    });
-
-  /* else if (accion == "editar") {
-    fetch(api + "editarPorId" + idFila + "", {
+  if (accionForm === "agregar") {
+    fetch(api + "crearUsuario", {
       method: "POST",
       // configuramos la cabecera, Header de peticion lleva una configuracin : contiene un archivo JS a JSON
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        nombre: nombre.value,
-        apellidos: apellido.value,
-        email: email.value,
-        apodo: apodo.value,
-        foto: email.value,
-        fechanace: fechanace.value,
-        especie_ciudadano_idespecie_ciudadano: especieCityzen.value
+        nombre: usuario.value,
+        pass: pass.value,
+        rol_idrol: rol.value
       })
     })
       .then((res) => res.json())
       .then((res) => {
-        alert("Exitosooooo!");
+        console.log(res);
       });
-  } */
-});
-
-on(document, "click", ".btnBorrar", (e) => {
-  let fila = e.target.parentNode.parentNode.parentNode;
-  let idFila = fila.firstElementChild.innerText;
-  let respuesta = window.confirm(`Seguro que desea borrar el registro con el id: ${idFila}`);
-
-  if (respuesta) {
-    fetch(api + "borrarPorId/" + idFila + "", {
-      method: "DELETE"
+    usuario.value = "";
+    pass.value = "";
+    location.reload();
+  } else if (accionForm == "editar") {
+    fetch(api + "editarPorId/" + idFila + "", {
+      method: "PUT",
+      // configuramos la cabecera, Header de peticion lleva una configuracin : contiene un archivo JS a JSON
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        nombre: usuario.value,
+        pass: pass.value,
+        rol_idrol: rol.value
+      })
     })
       .then((res) => res.json())
       .then((res) => {
@@ -127,18 +110,36 @@ on(document, "click", ".btnBorrar", (e) => {
   }
 });
 
-// METODO EDITAR
+// Metodo de UPDATE Y DELETE
+function obtenerID(id, traerAccion) {
+  // traemos el ID y la accion correspondiente del los botones Editar y Borrar
+  if (traerAccion === "editar") {
+    idFila = id;
+    accionForm = "editar";
 
-on(document, "click", ".btnEditar", (e) => {
-  let fila = e.target.parentNode.parentNode.parentNode;
-  let idFila = fila.firstElementChild.innerText;
-
-  fetch(api + "editarPorId/" + idFila + "")
-    .then((res) => res.json())
-    .then((res) => {
-      console.log(res);
-      location.reload();
-    });
-});
+    fetch(api + "listarPorId/" + id + "", {})
+      .then((res) => res.json())
+      .then((res) => {
+        res.usuarios.map((usuarios) => {
+          usuario.value = usuarios.nombre;
+          pass.value = usuarios.password;
+        });
+      });
+    frmCrearUsuarios.show();
+  } else if (traerAccion === "eliminar") {
+    idFila = id;
+    let respuesta = window.confirm(`Seguro que desea borrar el registro con el id: ${idFila}`);
+    if (respuesta) {
+      fetch(api + "borrarPorId/" + id + "", {
+        method: "DELETE"
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          console.log(res);
+          location.reload();
+        });
+    }
+  }
+}
 listarCityzen();
 roles();

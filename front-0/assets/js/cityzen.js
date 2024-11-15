@@ -9,6 +9,8 @@ let emailCityzen = document.querySelector("#TxtEmail");
 let fechanace = document.querySelector("#TxtFechaNacimiento");
 let especieCityzen = document.querySelector(".especie");
 let selectEspecies = document.querySelector("#especie");
+let idFila = 0;
+let accionForm = "";
 
 //Llmamos el metodo de modal de boostrap
 const frmCrearCityzen = new bootstrap.Modal(document.getElementById("frmCityzen"));
@@ -34,8 +36,8 @@ function especies() {
     });
 }
 
-let accion = "";
 btnNuevo.addEventListener("click", () => {
+  accionForm = "agregar";
   frmCrearCityzen.show();
 });
 
@@ -51,8 +53,6 @@ function listarCityzen() {
   fetch(api + "listarTodos")
     .then((res) => res.json())
     .then((res) => {
-      console.log(res);
-
       res.cityzen.forEach((cityzen) => {
         let fila =
           ` <tr>
@@ -63,8 +63,11 @@ function listarCityzen() {
           <td>${cityzen.email}</td>
           <td>${cityzen.fechanace.slice(0, 10)}</td>
           <td>${cityzen.especie}</td>
-          <td><a type="button" class="btnEditar btn btn-success"><i class="bi bi-pencil-square"></i></a></td>
-          <td><a type="button" class="btnBorrar btn btn-danger"><i class="bi bi-trash"></i></a></td>
+          <td><a type="button" class="btnEditar btn btn-success" onclick="obtenerID(${
+            cityzen.id
+          },'editar') "><i class="bi bi-pencil-square"></i></a></td>
+          <td><a type="button" class="btnBorrar btn btn-danger" 
+          onclick="obtenerID(${cityzen.id},'eliminar')"><i class="bi bi-trash"></i></a></td>
           </tr> ` + "</br>";
 
         tablaPersona.innerHTML += fila;
@@ -76,83 +79,92 @@ function listarCityzen() {
 frmCityzen.addEventListener("submit", (e) => {
   e.preventDefault(); // previene el evento por defecto de los formularios
 
-  fetch(api + "crearCiudadano", {
-    method: "POST",
-    // configuramos la cabecera, Header de peticion lleva una configuracin : contiene un archivo JS a JSON
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      nombre: nombreCityzen.value,
-      apellidos: apellidoCityzen.value,
-      email: emailCityzen.value,
-      apodo: apodoCityzen.value,
-      foto: "",
-      fechanace: fechanace.value,
-      especie: especieCityzen.value
-    })
-    
-  })
-   
-    .then((res) => res.json())
-    .then((res) => {
-    
-      console.log(res);
-    });
-    console.log("la especie es: "+especieCityzen.value);
-  /* else if (accion == "editar") {
-    fetch(api + "editarPorId" + idFila + "", {
+  if (accionForm == "agregar") {
+    fetch(api + "crearCiudadano", {
       method: "POST",
       // configuramos la cabecera, Header de peticion lleva una configuracin : contiene un archivo JS a JSON
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        nombre: nombre.value,
-        apellidos: apellido.value,
-        email: email.value,
-        apodo: apodo.value,
-        foto: email.value,
+        nombre: nombreCityzen.value,
+        apellidos: apellidoCityzen.value,
+        email: emailCityzen.value,
+        apodo: apodoCityzen.value,
+        foto: "",
         fechanace: fechanace.value,
-        especie_ciudadano_idespecie_ciudadano: especieCityzen.value
+        especie: especieCityzen.value
       })
     })
       .then((res) => res.json())
       .then((res) => {
-        alert("Exitosooooo!");
+        location.reload();
+        console.log(res);
       });
-  } */
-});
+  } else if (accionForm == "editar") {
+    fetch(api + "editarPorId/" + idFila + "", {
+      method: "PUT",
 
-on(document, "click", ".btnBorrar", (e) => {
-  let fila = e.target.parentNode.parentNode.parentNode;
-  let idFila = fila.firstElementChild.innerText;
-  let respuesta = window.confirm(`Seguro que desea borrar el registro con el id: ${idFila}`);
-
-  if (respuesta) {
-    fetch(api + "borrarPorId/" + idFila + "", {
-      method: "DELETE"
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        nombre: nombreCityzen.value,
+        apellidos: apellidoCityzen.value,
+        email: emailCityzen.value,
+        apodo: apodoCityzen.value,
+        foto: "",
+        fechanace: fechanace.value,
+        especie: especieCityzen.value
+      })
     })
       .then((res) => res.json())
       .then((res) => {
         console.log(res);
-        location.reload();
       });
   }
 });
 
-// METODO EDITAR
 
-on(document, "click", ".btnEditar", (e) => {
-  let fila = e.target.parentNode.parentNode.parentNode;
-  let idFila = fila.firstElementChild.innerText;
+// METODO EDITAR y borrar
+function obtenerID(id, traerAccion) {
 
-  fetch(api + "editarPorId/" + idFila + "")
-    .then((res) => res.json())
-    .then((res) => {
-      console.log(res);
-      location.reload();
-    });
-});
+  // traemos el ID y la accion correspondiente del los botones Editar y Borrar
+  if (traerAccion === "editar") {
+    idFila = id;
+    accionForm = "editar";
+    fetch(api + "listarPorId/" + id + "", {})
+      .then((res) => res.json())
+      .then((res) => {
+        res.cityzen.map((cityzen) => {
+          nombreCityzen.value = cityzen.nombre;
+          apellidoCityzen.value = cityzen.apellidos;
+          emailCityzen.value = cityzen.email;
+          apodoCityzen.value = cityzen.apodo;
+          let fechaDb = new Date(cityzen.fechanace);
+          const fechaFormateada = fechaDb.toLocaleDateString("es-CO", {
+            timeZone: "UTC"
+          });
+          fechanace.value = fechaFormateada;
+        });
+      });
+    frmCrearCityzen.show();
+
+
+  } else if (traerAccion === "eliminar") {
+    idFila = id;
+    let respuesta = window.confirm(`Seguro que desea borrar el registro con el id: ${idFila}`);
+    if (respuesta) {
+      fetch(api + "borrarPorId/" + id + "", {
+        method: "DELETE"
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          console.log(res);
+          location.reload();
+        });
+    }
+  }
+}
 listarCityzen();
 especies();

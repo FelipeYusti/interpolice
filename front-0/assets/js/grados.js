@@ -1,19 +1,19 @@
 // interacciones con la tabla aprendiz
 
 let tablaPersona = document.querySelector("#mitabla");
-let frmRol = document.querySelector("#frmRol");
-let nombreRol = document.querySelector("#nombreRol");
+let frmGrado = document.querySelector("#frmGrado");
+let nombreRol = document.querySelector("#nombreGrado");
 
 //Llmamos el metodo de modal de boostrap
-const frmCrearRol = new bootstrap.Modal(document.getElementById("frmCrearRol"));
+const frmCrearGrado = new bootstrap.Modal(document.getElementById("frmCrearGrado"));
 let btnNuevo = document.querySelector("#btnNuevo");
 
-let api = "http://localhost:4100/api/roles/";
+let api = "http://localhost:4100/api/grado/";
 
 let accionForm = "";
 btnNuevo.addEventListener("click", () => {
   accionForm = "agregar";
-  frmCrearRol.show();
+  frmCrearGrado.show();
 });
 
 const on = (element, event, selector, handler) => {
@@ -24,22 +24,22 @@ const on = (element, event, selector, handler) => {
   });
 };
 
-function listarRoles() {
-  fetch(api + "listarRoles")
+function listarGrados() {
+  fetch(api + "listarGrados")
     .then((res) => res.json())
     .then((res) => {
-      console.log(res);
+      
 
-      res.roles.forEach((rol) => {
+      res.grados.forEach((grados) => {
         let fila =
           ` <tr>
-          <td>${rol.idrol}</td>
-          <td>${rol.nombre}</td>   
+          <td>${grados.id}</td>
+          <td>${grados.grado}</td>   
           <td><a type="button" class="btnEditar btn btn-success" onclick="obtenerID(${
-            rol.idrol
+            grados.id
           },'editar') " ><i class="bi bi-pencil-square"></i></a></td>
           <td><a type="button" class="btnBorrar btn btn-danger" onclick="obtenerID(${
-            rol.idrol
+            grados.id
           },'eliminar') "  ><i class="bi bi-trash"></i></a></td>
           </tr> ` + "</br>";
 
@@ -48,11 +48,11 @@ function listarRoles() {
     });
 }
 
-frmRol.addEventListener("submit", (e) => {
+frmGrado.addEventListener("submit", (e) => {
   e.preventDefault(); // previene el evento por defecto de los formularios
 
   if (accionForm == "agregar") {
-    fetch(api + "crearRol", {
+    fetch(api + "crearGrado", {
       method: "POST",
 
       headers: {
@@ -94,11 +94,11 @@ function obtenerID(id, traerAccion) {
     fetch(api + "listarPorId/" + id + "", {})
       .then((res) => res.json())
       .then((res) => {
-        res.roles.map((roles) => {
-          nombreRol.value = roles.nombre;
+        res.grados.map((grados) => {
+          nombreGrado.value = grados.grado;
         });
       });
-    frmCrearRol.show();
+      frmCrearGrado.show();
 
 
   } else if (traerAccion === "eliminar") {
@@ -116,4 +116,4 @@ function obtenerID(id, traerAccion) {
     }
   }
 }
-listarRoles();
+listarGrados();

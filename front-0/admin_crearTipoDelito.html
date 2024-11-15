@@ -300,11 +300,17 @@
               </a>
             </li>
             <li>
+              <a href="admin_crearUsuario.html"> <i class="bi bi-circle"></i><span>Gestionar Usuarios</span> </a>
+            </li>
+            
+            <li>
               <a href="admin_crearTipoDelito.html"> <i class="bi bi-circle"></i><span>Gestionar Tipo de delito</span> </a>
             </li>
+            
             <li>
-              <a href="admin_crearUsuario.html"> <i class="bi bi-circle"></i><span>Crear Usuario</span> </a>
+              <a href="admin_crearGrado.html"> <i class="bi bi-circle"></i><span>Gestionar Grados de los Delitos</span> </a>
             </li>
+
           </ul>
         </li>
         <li class="nav-item">
@@ -414,17 +420,21 @@
       <section class="section dashboard">
         <div class="row">
           <div class="col-9">
-            <div class="card">
-              <div class="card-header">
-                <button
+            <button
                   type="button"
                   id="btnNuevo"
                   class="btn btn-primary"
                   data-bs-toggle="modal"
                   data-bs-target="#frmTipoDelito"
                 >
-                  Agregar - Tipo delito
+                  Agregr - Tipo delito
                 </button>
+            <div class="card mt-2">
+             
+              <div class="card-header bg bg-dark text-#012970">
+                    
+                <h4 style="text-align: center; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; " >TIPOS DE DELITOS</h4> 
+                   
               </div>
               <div class="card-body">
                 <!-- contenido de la CARD -->
@@ -432,7 +442,8 @@
                   <thead>
                     <tr>
                       <th scope="col">#</th>
-                      <th scope="col">Tipo de Delito</th>
+                      <th scope="col">Delito</th>
+                      <th scope="col">Grado de Delito</th>
 
                       <th>Editar</th>
                       <th>Borrar</th>
@@ -448,7 +459,7 @@
       <!-- FIN del contenido -->
       <div
         class="modal fade"
-        id="frmCrearRol"
+        id="frmCrearDelito"
         tabindex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
@@ -469,20 +480,33 @@
             <div class="modal-body">
               <div class="row">
                 <form id="frmTipoDelito">
-                 <div class="col-6">
+                 <div class="col-7">
                   <div class="mb-4">
                     <label for="exampleFormControlInput1" class="form-label">Nombre del Delito </label>
                     <input
                     type="text"
                     class="form-control"
-                    placeholder="Nombre"
+                    placeholder="Ingrese el nombre del delito.."
                     aria-label="First name"
                     id="TxtTipoDelito"
                   />
                   </div>
                 
                 </div>
-              
+
+                <div class="row ">
+                  <div class="col-6">
+                      
+                      <div class="mb-4">
+                          <label for="exampleFormControlInput1" class="form-label">Grado del delito </label>
+                          <select class="grado form-select" id="grado"  aria-label="Default select example">
+                            <option selected  >Elejir el grado..</option>
+                            
+                          </select>
+                      </div>
+                     
+                  </div>
+                </div>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

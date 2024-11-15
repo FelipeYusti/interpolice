@@ -300,11 +300,17 @@
               </a>
             </li>
             <li>
+              <a href="admin_crearUsuario.html"> <i class="bi bi-circle"></i><span>Gestionar Usuarios</span> </a>
+            </li>
+            
+            <li>
               <a href="admin_crearTipoDelito.html"> <i class="bi bi-circle"></i><span>Gestionar Tipo de delito</span> </a>
             </li>
+            
             <li>
-              <a href="admin_crearUsuario.html"> <i class="bi bi-circle"></i><span>Crear Usuario</span> </a>
+              <a href="admin_crearGrado.html"> <i class="bi bi-circle"></i><span>Gestionar Grados de los Delitos</span> </a>
             </li>
+
           </ul>
         </li>
 
@@ -415,17 +421,21 @@
       <section class="section dashboard">
         <div class="row">
           <div class="col">
-            <div class="card">
-              <div class="card-header">
-                <button
-                  type="button"
-                  id="btnNuevo"
-                  class="btn btn-primary"
-                  data-bs-toggle="modal"
-                  data-bs-target="#frmUsuarios"
-                >
-                  Agregar Usuario
-                </button>
+            <button
+            type="button"
+            id="btnNuevo"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#frmUsuarios"
+          >
+            Agregar Usuario
+          </button>
+            <div class="card mt-2">   
+              <div class="card-header bg bg-dark text-#012970">
+                
+                  <h4 style="text-align: center; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; " >USER´S</h4> 
+                 
+        
               </div>
               <div class="card-body">
                 <!-- contenido de la CARD -->
@@ -510,7 +520,7 @@
               <!--Fin del contenido de la modal-->
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button"  class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
               <button type="submit" class="btn btn-success">Guardar </button>
             </form>
             </div>

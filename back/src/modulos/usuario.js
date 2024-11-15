@@ -9,7 +9,8 @@ const bd = require("./bd.js"); // instanciamos la  conexion de la base de datos
 const usuario = express();
 
 usuario.get("/api/usuario/listarUsuarios", (req, res) => {
-  let consulta = "SELECT * FROM usuarios";
+  let consulta =
+    "SELECT rol.nombre AS rol,usuarios.idusuarios,usuarios.nombre,usuarios.password FROM usuarios INNER JOIN rol ON usuarios.rol_idrol = rol.idrol;";
   bd.query(consulta, (error, usuarios) => {
     if (error) {
       res.send({
@@ -50,7 +51,7 @@ usuario.get("/api/usuario/listarPorId/:id", (req, res) => {
 usuario.post("/api/usuario/crearUsuario", (req, res) => {
   let formDatosUsuario = {
     nombre: req.body.nombre,
-    password: bcrypt.hashSync(req.body.pass,10),
+    password: bcrypt.hashSync(req.body.pass, 10),
     rol_idrol: req.body.rol_idrol
   };
 
@@ -96,7 +97,7 @@ usuario.put("/api/usuario/editarPorId/:id", (req, res) => {
   let formDatosUsuario = {
     nombre: req.body.nombre,
     rol_idrol: req.body.rol_idrol,
-    password: req.body.pass
+    password: bcrypt.hashSync(req.body.pass, 10)
   };
   let consulta = "UPDATE usuarios SET ? WHERE idusuarios  = ?";
   bd.query(consulta, [formDatosUsuario, id], (error, usuarios) => {
