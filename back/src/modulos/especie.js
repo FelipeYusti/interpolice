@@ -47,7 +47,7 @@ especieCiudadano.get("/api/especieCiudadano/listarPorId/:id", (req, res) => {
 
 especieCiudadano.post("/api/especieCiudadano/crearEspecie", (req, res) => {
   let formDatosDeEspecie = {
-    nombre: req.body.nombre
+    nombre: req.body.nombreEspecie
   };
 
   let consulta = "INSERT INTO especie_ciudadano SET ? ";

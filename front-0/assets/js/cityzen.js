@@ -1,6 +1,6 @@
 // interacciones con la tabla CITYZEN
 
-let tablaPersona = document.querySelector("#mitabla");
+let tablaCityzen = document.querySelector("#mitabla");
 let frmCityzen = document.querySelector("#frmCityzen");
 let nombreCityzen = document.querySelector("#TxtNombre");
 let apellidoCityzen = document.querySelector("#TxtApellido");
@@ -70,7 +70,7 @@ function listarCityzen() {
           onclick="obtenerID(${cityzen.id},'eliminar')"><i class="bi bi-trash"></i></a></td>
           </tr> ` + "</br>";
 
-        tablaPersona.innerHTML += fila;
+          tablaCityzen.innerHTML += fila;
       });
     });
 }

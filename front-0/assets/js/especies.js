@@ -1,19 +1,19 @@
 // interacciones con la tabla aprendiz
 
-let tablaGrado = document.querySelector("#mitabla");
-let frmGrado = document.querySelector("#frmGrado");
-let nombreRol = document.querySelector("#nombreGrado");
+let tablaEspecie = document.querySelector("#mitabla");
+let frmEspecie = document.querySelector("#frmEspecie");
+let nombreEspecie = document.querySelector("#nombreEspecie");
 
 //Llmamos el metodo de modal de boostrap
-const frmCrearGrado = new bootstrap.Modal(document.getElementById("frmCrearGrado"));
+const frmCrearEspecie = new bootstrap.Modal(document.getElementById("frmCrearEspecie"));
 let btnNuevo = document.querySelector("#btnNuevo");
 
-let api = "http://localhost:4100/api/grado/";
+let api = "http://localhost:4100/api/especieCiudadano/";
 
 let accionForm = "";
 btnNuevo.addEventListener("click", () => {
   accionForm = "agregar";
-  frmCrearGrado.show();
+  frmCrearEspecie.show();
 });
 
 const on = (element, event, selector, handler) => {
@@ -24,42 +24,38 @@ const on = (element, event, selector, handler) => {
   });
 };
 
-function listarGrados() {
-  fetch(api + "listarGrados")
+function listarEspecie() {
+  fetch(api + "listarTodasEspecies")
     .then((res) => res.json())
     .then((res) => {
-      
+      console.log(res);
 
-      res.grados.forEach((grados) => {
+      res.especie.forEach((especie) => {
         let fila =
           ` <tr>
-          <td>${grados.id}</td>
-          <td>${grados.grado}</td>   
-          <td><a type="button" class="btnEditar btn btn-success" onclick="obtenerID(${
-            grados.id
-          },'editar') " ><i class="bi bi-pencil-square"></i></a></td>
-          <td><a type="button" class="btnBorrar btn btn-danger" onclick="obtenerID(${
-            grados.id
-          },'eliminar') "  ><i class="bi bi-trash"></i></a></td>
+          <td>${especie.idespecie_ciudadano}</td>
+          <td>${especie.nombre}</td>   
+          <td><a type="button" class="btnEditar btn btn-success" onclick="obtenerID(${especie.idespecie_ciudadano},'editar') " ><i class="bi bi-pencil-square"></i></a></td>
+          <td><a type="button" class="btnBorrar btn btn-danger" onclick="obtenerID(${especie.idespecie_ciudadano},'eliminar') "  ><i class="bi bi-trash"></i></a></td>
           </tr> ` + "</br>";
 
-          tablaGrado.innerHTML += fila;
+        tablaEspecie.innerHTML += fila;
       });
     });
 }
 
-frmGrado.addEventListener("submit", (e) => {
+frmEspecie.addEventListener("submit", (e) => {
   e.preventDefault(); // previene el evento por defecto de los formularios
 
   if (accionForm == "agregar") {
-    fetch(api + "crearGrado", {
+    fetch(api + "crearEspecie", {
       method: "POST",
 
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        nombre: nombreRol.value
+        nombre: nombreEspecie.value
       })
     })
       .then((res) => res.json())
@@ -68,14 +64,14 @@ frmGrado.addEventListener("submit", (e) => {
         location.reload();
       });
   } else if (accionForm == "editar") {
-    fetch(api + "editarPorId" + idFila + "", {
+    fetch(api + "editarEspeciePorId/" + idFila + "", {
       method: "PUT",
       // configuramos la cabecera, Header de peticion lleva una configuracin : contiene un archivo JS a JSON
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        nombre: nombreRol.value
+        nombreEspecie: nombreEspecie.value
       })
     })
       .then((res) => res.json())
@@ -86,7 +82,6 @@ frmGrado.addEventListener("submit", (e) => {
   }
 });
 function obtenerID(id, traerAccion) {
-
   // traemos el ID y la accion correspondiente del los botones Editar y Borrar
   if (traerAccion === "editar") {
     idFila = id;
@@ -94,13 +89,11 @@ function obtenerID(id, traerAccion) {
     fetch(api + "listarPorId/" + id + "", {})
       .then((res) => res.json())
       .then((res) => {
-        res.grados.map((grados) => {
-          nombreGrado.value = grados.grado;
+        res.especie.map((especie) => {
+          nombreEspecie.value = especie.nombre;
         });
       });
-      frmCrearGrado.show();
-
-
+    frmCrearEspecie.show();
   } else if (traerAccion === "eliminar") {
     idFila = id;
     let respuesta = window.confirm(`Seguro que desea borrar el registro con el id: ${idFila}`);
@@ -116,4 +109,4 @@ function obtenerID(id, traerAccion) {
     }
   }
 }
-listarGrados();
+listarEspecie();

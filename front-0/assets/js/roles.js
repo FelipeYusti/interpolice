@@ -1,6 +1,6 @@
 // interacciones con la tabla aprendiz
 
-let tablaPersona = document.querySelector("#mitabla");
+let tablaRol = document.querySelector("#mitabla");
 let frmRol = document.querySelector("#frmRol");
 let nombreRol = document.querySelector("#nombreRol");
 
@@ -43,7 +43,7 @@ function listarRoles() {
           },'eliminar') "  ><i class="bi bi-trash"></i></a></td>
           </tr> ` + "</br>";
 
-        tablaPersona.innerHTML += fila;
+          tablaRol.innerHTML += fila;
       });
     });
 }
@@ -68,7 +68,7 @@ frmRol.addEventListener("submit", (e) => {
         location.reload();
       });
   } else if (accionForm == "editar") {
-    fetch(api + "editarPorId" + idFila + "", {
+    fetch(api + "editarRolPorId/" + idFila + "", {
       method: "PUT",
       // configuramos la cabecera, Header de peticion lleva una configuracin : contiene un archivo JS a JSON
       headers: {

@@ -1,6 +1,6 @@
 // interacciones con la tabla aprendiz
 
-let tablaPersona = document.querySelector("#mitabla");
+let tablaDelito = document.querySelector("#mitabla");
 let frmDelito = document.querySelector("#frmTipoDelito");
 let nombreDelito = document.querySelector("#TxtTipoDelito");
 let gradoDelito = document.querySelector("#grado");
@@ -57,7 +57,7 @@ function listarDelitos() {
           <td><a type="button" class="btnBorrar btn btn-danger" onclick="obtenerID(${delitos.idtipo_delito},'eliminar')" ><i class="bi bi-trash"></i></a></td>
           </tr> ` + "</br>";
 
-        tablaPersona.innerHTML += fila;
+          tablaDelito.innerHTML += fila;
       });
     });
 }

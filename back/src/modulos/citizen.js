@@ -47,7 +47,7 @@ cityzen.get("/api/cityzen/listarPorId/:id", (req, res) => {
 });
 
 cityzen.post("/api/cityzen/crearCiudadano", (req, res) => {
-  /* req.body. */
+  
   let formDatosCityzen = {
     nombre: req.body.nombre,
     apellidos: req.body.apellidos,
