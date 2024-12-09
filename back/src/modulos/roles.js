@@ -6,8 +6,30 @@ const bd = require("./bd.js"); // instanciamos la  conexion de la base de datos
 
 const roles = express();
 
+roles.get("/api/roles/listarTodosRoles", (req, res) => {
+  let limite = parseInt(req.query.limite);
+
+  // recibimos la pagina
+  let pagina = parseInt(req.query.pagina);
+
+  // calculamos el OFFSET
+  let OFFSET = parseInt((pagina - 1) * limite);
+
+  let consulta2 = "SELECT COUNT(*) AS conteoRoles FROM rol ";
+  let consulta = "SELECT * FROM rol LIMIT ? OFFSET ? ";
+  bd.query(consulta2, (error, totalRoles) => {
+    bd.query(consulta, [limite, OFFSET], (error, roles) => {
+      res.send({
+        TotalRoles: totalRoles,
+        roles: roles,
+        error: error
+      });
+    });
+  });
+});
+
 roles.get("/api/roles/listarRoles", (req, res) => {
-  let consulta = "SELECT * FROM rol";
+  let consulta = "SELECT * FROM rol ";
   bd.query(consulta, (error, roles) => {
     if (error) {
       res.send({
@@ -24,7 +46,6 @@ roles.get("/api/roles/listarRoles", (req, res) => {
     }
   });
 });
-
 roles.get("/api/roles/listarPorId/:id", (req, res) => {
   let id = req.params.id;
   let consulta = "SELECT * FROM rol WHERE idrol  = ?";

@@ -9,22 +9,26 @@ const bd = require("./bd.js"); // instanciamos la  conexion de la base de datos
 const usuario = express();
 
 usuario.get("/api/usuario/listarUsuarios", (req, res) => {
+  let limite = parseInt(req.query.limite);
+
+  // recibimos la pagina
+  let pagina = parseInt(req.query.pagina);
+
+  // calculamos el OFFSET
+  let OFFSET = parseInt((pagina - 1) * limite);
+
+  let consulta2 = "SELECT COUNT(*) AS conteoUsuarios FROM usuarios ";
+
   let consulta =
-    "SELECT rol.nombre AS rol,usuarios.idusuarios,usuarios.nombre,usuarios.password FROM usuarios INNER JOIN rol ON usuarios.rol_idrol = rol.idrol;";
-  bd.query(consulta, (error, usuarios) => {
-    if (error) {
+    "SELECT rol.nombre AS rol,usuarios.idusuarios,usuarios.nombre,usuarios.password FROM usuarios INNER JOIN rol ON usuarios.rol_idrol = rol.idrol LIMIT ? OFFSET ?;";
+  bd.query(consulta2, (error, totalUsuarios) => {
+    bd.query(consulta, [limite, OFFSET], (error, usuarios) => {
       res.send({
-        status: "Error",
-        message: "Ocurrio un error en la consulta",
+        TotalUsuarios: totalUsuarios,
+        usuarios: usuarios,
         error: error
       });
-    } else {
-      res.send({
-        status: "Ok",
-        message: "¡Consulta Exitosa !",
-        usuarios: usuarios
-      });
-    }
+    });
   });
 });
 

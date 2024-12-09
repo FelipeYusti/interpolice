@@ -7,21 +7,26 @@ const bd = require("./bd.js"); // instanciamos la  conexion de la base de datos
 const cityzen = express();
 
 cityzen.get("/api/cityzen/listarTodos", (req, res) => {
-  let consulta = "SELECT  citizen.id,citizen.nombre,citizen.apellidos,citizen.apodo,citizen.email,citizen.fechanace,especie_ciudadano.nombre as especie FROM citizen inner Join especie_ciudadano ON especie_ciudadano.idespecie_ciudadano =  citizen.especie_ciudadano_idespecie_ciudadano";
-  bd.query(consulta, (error, cityzen) => {
-    if (error) {
+  let limite = parseInt(req.query.limite);
+
+  // recibimos la pagina
+  let pagina = parseInt(req.query.pagina);
+
+  // calculamos el OFFSET
+  let OFFSET = parseInt((pagina - 1) * limite);
+
+  let consulta2 = "SELECT COUNT(*) AS conteoCitizen FROM citizen ";
+  let consulta =
+    "SELECT  citizen.id,citizen.nombre,citizen.apellidos,citizen.apodo,citizen.email,citizen.fechanace,especie_ciudadano.nombre as especie FROM citizen inner Join especie_ciudadano ON especie_ciudadano.idespecie_ciudadano =  citizen.especie_ciudadano_idespecie_ciudadano LIMIT ? OFFSET ?";
+
+  bd.query(consulta2, (error, totalCityzen) => {
+    bd.query(consulta, [limite, OFFSET], (error, cityzen) => {
       res.send({
-        status: "Error",
-        message: "Ocurrio un error en la consulta",
+        TotalCityzens: totalCityzen,
+        cityzen: cityzen,
         error: error
       });
-    } else {
-      res.send({
-        status: "Ok",
-        message: "¡Consulta Exitosa !",
-        cityzen: cityzen
-      });
-    }
+    });
   });
 });
 
@@ -41,13 +46,11 @@ cityzen.get("/api/cityzen/listarPorId/:id", (req, res) => {
         message: "¡Consulta Exitosa !",
         cityzen: cityzen
       });
-
     }
   });
 });
 
 cityzen.post("/api/cityzen/crearCiudadano", (req, res) => {
-  
   let formDatosCityzen = {
     nombre: req.body.nombre,
     apellidos: req.body.apellidos,
@@ -74,7 +77,6 @@ cityzen.post("/api/cityzen/crearCiudadano", (req, res) => {
         message: "¡Consulta Exitosa !",
         cityzen: cityzen
       });
-
     }
   });
 });

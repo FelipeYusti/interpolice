@@ -6,8 +6,31 @@ const bd = require("./bd.js"); // instanciamos la  conexion de la base de datos
 
 const grado = express();
 
+grado.get("/api/grado/listarTodosGrados", (req, res) => {
+  let limite = parseInt(req.query.limite);
+
+  // recibimos la pagina
+  let pagina = parseInt(req.query.pagina);
+
+  // calculamos el OFFSET
+  let OFFSET = parseInt((pagina - 1) * limite);
+
+  let consulta2 = "SELECT COUNT(*) AS conteoGrados FROM grado_delito ";
+  let consulta = "SELECT * FROM grado_delito LIMIT ? OFFSET ?";
+
+  bd.query(consulta2, (error, totalGrados) => {
+    bd.query(consulta, [limite, OFFSET], (error, grados) => {
+      res.send({
+        TotalGrados: totalGrados,
+        grados: grados,
+        error: error
+      });
+    });
+  });
+});
+
 grado.get("/api/grado/listarGrados", (req, res) => {
-  let consulta = "SELECT * FROM grado_delito";
+  let consulta = "SELECT * FROM grado_delito ";
   bd.query(consulta, (error, grados) => {
     if (error) {
       res.send({
@@ -24,7 +47,6 @@ grado.get("/api/grado/listarGrados", (req, res) => {
     }
   });
 });
-
 grado.get("/api/grado/listarPorId/:id", (req, res) => {
   let id = req.params.id;
   let consulta = "SELECT * FROM grado_delito WHERE id  = ?";

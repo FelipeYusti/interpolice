@@ -7,21 +7,26 @@ const bd = require("./bd.js"); // instanciamos la  conexion de la base de datos
 const delito = express();
 
 delito.get("/api/delito/listarTodosDelitos", (req, res) => {
-  let consulta = "SELECT grado_delito.grado,tipo_delito.idtipo_delito,tipo_delito.delito FROM tipo_delito INNER JOIN grado_delito ON grado_delito.id = tipo_delito.grado_delito_id ";
-  bd.query(consulta, (error, delitos) => {
-    if (error) {
+  let limite = parseInt(req.query.limite);
+
+  // recibimos la pagina
+  let pagina = parseInt(req.query.pagina);
+
+  // calculamos el OFFSET
+  let OFFSET = parseInt((pagina - 1) * limite);
+
+  let consulta2 = "SELECT COUNT(*) AS conteoDelito FROM tipo_delito ";
+  let consulta =
+    "SELECT grado_delito.grado,tipo_delito.idtipo_delito,tipo_delito.delito FROM tipo_delito INNER JOIN grado_delito ON grado_delito.id = tipo_delito.grado_delito_id LIMIT ? OFFSET ?";
+
+  bd.query(consulta2, (Error, totalDelitos) => {
+    bd.query(consulta, [limite, OFFSET], (error, delitos) => {
       res.send({
-        status: "Error",
-        message: "Ocurrio un error en la consulta",
+        TotalDelitos: totalDelitos,
+        delitos: delitos,
         error: error
       });
-    } else {
-      res.send({
-        status: "Ok",
-        message: "¡Consulta Exitosa !",
-        delitos: delitos
-      });
-    }
+    });
   });
 });
 

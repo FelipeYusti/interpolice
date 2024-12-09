@@ -7,6 +7,29 @@ const bd = require("./bd.js"); // instanciamos la  conexion de la base de datos
 const especieCiudadano = express();
 
 especieCiudadano.get("/api/especieCiudadano/listarTodasEspecies", (req, res) => {
+  let limite = parseInt(req.query.limite);
+
+  // recibimos la pagina
+  let pagina = parseInt(req.query.pagina);
+
+  // calculamos el OFFSET
+  let OFFSET = parseInt((pagina - 1) * limite);
+
+  let consulta2 = "SELECT COUNT(*) AS conteoEspecie FROM especie_ciudadano ";
+  let consulta = "SELECT * FROM especie_ciudadano";
+
+  bd.query(consulta2, (error, totalEspecies) => {
+    bd.query(consulta, [limite, OFFSET], (error, especie) => {
+      res.send({
+        TotalEspecies: totalEspecies,
+        especie: especie,
+        error: error
+      });
+    });
+  });
+});
+
+especieCiudadano.get("/api/especieCiudadano/listarEspecies", (req, res) => {
   let consulta = "SELECT * FROM especie_ciudadano";
   bd.query(consulta, (error, especie) => {
     if (error) {
@@ -24,7 +47,6 @@ especieCiudadano.get("/api/especieCiudadano/listarTodasEspecies", (req, res) => 
     }
   });
 });
-
 especieCiudadano.get("/api/especieCiudadano/listarPorId/:id", (req, res) => {
   let id = req.params.id;
   let consulta = "SELECT * FROM especie_ciudadano WHERE idespecie_ciudadano  = ?";
